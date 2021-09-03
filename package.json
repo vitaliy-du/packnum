@@ -1,0 +1,21 @@
+{
+  "name": "packnum",
+  "version": "1.2.7",
+  "description": "Tiny library that allow you encode/decode numbers to represent in 127-bit system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vitaliy-du/packnum.git"
+  },
+  "author": "Vitaliy Dyukar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vitaliy-du/packnum/issues"
+  },
+  "homepage": "https://github.com/vitaliy-du/packnum#readme",
+  "types": "index.d.ts",
+  "keywords": ["convert number", "number to string", "string to number", "encode number", "decode string", "encode number to string", "decode string to number"]
+}
