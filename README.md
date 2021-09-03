@@ -36,7 +36,7 @@ console.log(encoded, '==', packNumDecode(encoded));
 
 encoded = packNumEncode(-12345678);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> wрQL3 == 123456.789
+// -> ыEznБ == -12345678
 
 encoded = packNumEncode(123456.789);
 console.log(encoded, '==', packNumDecode(encoded));
