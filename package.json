@@ -1,7 +1,7 @@
 {
   "name": "packnum",
-  "version": "1.2.7",
-  "description": "Tiny library that allow you encode/decode numbers to represent in 127-bit system.",
+  "version": "1.2.8",
+  "description": "Tiny library that allow you encode/decode numbers to represent as string symbols.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -3,7 +3,7 @@ packnum
 
 [![npm version][npm-image]][npm-url] [![license][license-image]][license-url] [![downloads][downloads-image]][downloads-url]
 
-Tiny library that allow you encode/decode numbers to represent in 127-bit system.
+Tiny library that allow you encode/decode numbers to represent as string symbols.
 You can reduce long number like 2043958943.54321 to compact string kyЫ5qдH5.
 Order of sorting encoded numbers will match string sort for numbers with same length.
 

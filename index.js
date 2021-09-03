@@ -1,6 +1,6 @@
 /**
  * PackNum.
- * Tiny library that allow you encode/decode numbers to represent in 127-bit system.
+ * Tiny library that allow you encode/decode numbers to represent as string symbols.
  *
  * Copyright © 2021 Vitaliy Dyukar.
  */
