@@ -40,7 +40,7 @@ console.log(encoded, '==', packNumDecode(encoded));
 
 encoded = packNumEncode(123456.789);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> wрQL3 == -123456.789
+// -> wрQL3 == 123456.789
 
 encoded = packNumEncode(-123456.789);
 console.log(encoded, '==', packNumDecode(encoded));
