@@ -1,21 +1,31 @@
 {
-  "name": "packnum",
-  "version": "1.2.8",
-  "description": "Tiny library that allow you encode/decode numbers to represent as string symbols.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vitaliy-du/packnum.git"
-  },
-  "author": "Vitaliy Dyukar",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/vitaliy-du/packnum/issues"
-  },
-  "homepage": "https://github.com/vitaliy-du/packnum#readme",
-  "types": "index.d.ts",
-  "keywords": ["convert number", "number to string", "string to number", "encode number", "decode string", "encode number to string", "decode string to number"]
+	"name": "packnum",
+	"version": "1.2.9",
+	"description": "Tiny library that allow you encode/decode numbers to represent as string symbols.",
+	"main": "index.js",
+	"scripts": {},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/vitaliy-du/packnum.git"
+	},
+	"author": "Vitaliy Dyukar",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/vitaliy-du/packnum/issues"
+	},
+	"homepage": "https://github.com/vitaliy-du/packnum#readme",
+	"types": "index.d.ts",
+	"keywords": [
+		"radix",
+		"radix-32",
+		"radix-64",
+		"radix-128",
+		"convert number",
+		"number to string",
+		"string to number",
+		"encode number",
+		"decode string",
+		"encode number to string",
+		"decode string to number"
+	]
 }

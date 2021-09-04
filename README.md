@@ -45,6 +45,14 @@ console.log(encoded, '==', packNumDecode(encoded));
 encoded = packNumEncode(-123456.789);
 console.log(encoded, '==', packNumDecode(encoded));
 // -> ЖGжлД == -123456.789
+
+encoded = packNumEncode('bebab0ba', 16);
+console.log(encoded, '==', packNumDecode(encoded, 16));
+// -> Bцлвw0 == bebab0ba
+
+encoded = packNumEncode('b0ba.beba', 16);
+console.log(encoded, '==', packNumDecode(encoded, 16));
+// -> Сl1NFgДСC == b0ba.beba
 ```
 
 ## Doc
@@ -52,20 +60,24 @@ console.log(encoded, '==', packNumDecode(encoded));
 /**
  * Return numeric value of string.
  *
- * @param value PackNum encoded string.
+ * @param value PackNum encoded string;
+ * @param radix Specifies a radix for converting numeric values to strings. By default is 10.
  */
-export function packNumDecode(value: string): number;
+export function packNumDecode(value: string, radix?: number): number | string;
 
 /**
  * Return string value of number.
  *
- * @param value Numeric value.
+ * @param value Numeric value;
+ * @param radix A value between 2 and 36 that specifies the base of the number in string. By default is 10.
  */
-export function packNumEncode(value: number): string;
+export function packNumEncode(value: number | string, radix?: number): string;
 ```
 
-## License
+## Thanks
+- [Maxim Odorodko](https://www.npmjs.com/~ihaveataletotell) (for radix idea)
 
+## License
 [MIT](LICENSE). Copyright (c) 2021 Vitaliy Dyukar.
 
 [npm-image]: https://img.shields.io/npm/v/packnum.svg?style=flat-square

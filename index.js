@@ -49,8 +49,22 @@ function charCodeFromUtf8ToWin1251(char) {
 	return code - 0x350;
 }
 
-function trunc(value) {
-	return (value < 0) ? Math.ceil(value) : Math.floor(value);
+function parseNumber(value, radix = 10) {
+	if (radix === 10) return +value;
+	if (typeof value !== 'string' || !value) return;
+	if (value.indexOf('.') < 0) return parseInt(value, radix);
+	var parts = value.split('.');
+	if (parts.length != 2) return;
+	var frac = parts[1] ? parseInt(parts[1], radix) : 0;
+	if (isNaN(frac) || (frac < 0)) return;
+	var int = (parts[0] && (parts[0] !== '-') && (parts[0] !== '+')) ? Math.abs(parseInt(parts[0], radix)) : 0;
+	var sign = (value[0] === '-') ? -1 : 1;
+	return sign * (int + (frac ? (frac * Math.pow(radix, -Math.min((parts[1] || '').length, 19))) : 0));
+}
+
+function trunc(value, precision = 0) {
+	const factor = value <= 19 ? _pow10[Math.max(precision, 0)] : Math.pow(10, precision);
+	return ((value < 0) ? Math.ceil(value * factor) : Math.floor(value * factor)) / factor;
 }
 
 function encode(value, precision, neg) {
@@ -87,13 +101,13 @@ function encode(value, precision, neg) {
 	return result.join('');
 }
 
-export function packNumDecode(value) {
+export function packNumDecode(value, radix = 10) {
 	if (!(value || '').length) return;
 	var result;
 	if (value.length === 1) {
 		result = _charToCode[charCodeFromUtf8ToWin1251(value[0])];
 		if (result >= 64) result -= 0x7F;
-		return result;
+		return (radix === 10) ? result : result.toString(radix);
 	}
 	var len = Math.min(value.length, 10) - 1;
 	var meta = _charToCode[charCodeFromUtf8ToWin1251(value[len])];
@@ -108,20 +122,14 @@ export function packNumDecode(value) {
 	}
 	if (neg) result = -result;
 	if (precision > 0) result = result / _pow10[precision];
-	return result;
+	return (radix === 10) ? result : result.toString(radix);
 }
 
-export function packNumEncode(value) {
-	if (isNaN(value)) return;
+export function packNumEncode(value, radix = 10) {
+	var parsed = parseNumber(value, radix);
+	if (isNaN(parsed)) return;
+	var float = Math.abs(parsed);
 	var precision = 0;
-	var float = Math.abs(value);
-	while (float - trunc(float) !== 0) {
-		var temp = float;
-		float = temp * 0x0A;
-		precision++;
-		if (float - trunc(float) === 0) break;
-		float = temp * 0x64;
-		precision++;
-	}
-	return encode(float, precision, value < 0);
+	while (float !== trunc(float, precision)) precision++;
+	return encode(float * _pow10[precision], precision, parsed < 0);
 }
