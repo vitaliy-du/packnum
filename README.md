@@ -3,8 +3,8 @@ packnum
 
 [![npm version][npm-image]][npm-url] [![license][license-image]][license-url] [![downloads][downloads-image]][downloads-url]
 
-Tiny library that allow you encode/decode numbers to represent as string symbols.
-You can reduce long number like 2043958943.54321 to compact string kyЫ5qдH5.
+Tiny library that allow you encode/decode numbers to represent as win-1251 string.
+You can reduce long number like 2043958943.54321 to compact string kyЫ5qдHb.
 Order of sorting encoded numbers will match string sort for numbers with same length.
 
 Install with [npm](https://www.npmjs.com/):
@@ -18,41 +18,51 @@ npm install packnum --save
 ```tsx
 import {packNumDecode, packNumEncode} from "packnum";
 
-let encoded = packNumEncode(3565967548);
+let encoded = packNumEncode(114110961536);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> Danny0 == 3565967548
+// -> Danny0 == 114110961536
 
-encoded = packNumEncode(98009904585782);
+encoded = packNumEncode(3136316946745024);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> Maximus0 == 98009904585782
+// -> Maximus0 == 3136316946745024
 
-encoded = packNumEncode(972921984562);
+encoded = packNumEncode(31133503505984);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> Serjio0 == 972921984562
+// -> Serjio0 == 31133503505984
 
-encoded = packNumEncode(20439584373019430);
+encoded = packNumEncode(654066699936621800);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> adsPlace0 == 20439584373019430
+// -> adsPlace0 == 654066699936621800
 
 encoded = packNumEncode(-12345678);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> ыEznБ == -12345678
+// -> йvцТ == -12345678
 
 encoded = packNumEncode(123456.789);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> wрQL3 == 123456.789
+// -> wрQLZ == 123456.789
 
 encoded = packNumEncode(-123456.789);
 console.log(encoded, '==', packNumDecode(encoded));
-// -> ЖGжлД == -123456.789
+// -> ЖGжлд == -123456.789
 
 encoded = packNumEncode('bebab0ba', 16);
 console.log(encoded, '==', packNumDecode(encoded, 16));
-// -> Bцлвw0 == bebab0ba
+// -> lШh5Q == bebab0ba
 
 encoded = packNumEncode('b0ba.beba', 16);
 console.log(encoded, '==', packNumDecode(encoded, 16));
-// -> Сl1NFgДСC == b0ba.beba
+// -> Сl1NFgДСi == b0ba.beba
+
+console.time('speedTest');
+for (let i = -2500000; i < 2500000; i++) {
+    const float = i / 2;
+    encoded = packNumEncode(float);
+    const decoded = packNumDecode(encoded);
+    if (decoded != float) throw new Error(`Panic! Float is ${float}`);
+}
+console.timeEnd('speedTest');
+// -> speedTest: ~1000 ms
 ```
 
 ## Doc

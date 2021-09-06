@@ -1,7 +1,7 @@
 {
 	"name": "packnum",
-	"version": "1.2.9",
-	"description": "Tiny library that allow you encode/decode numbers to represent as string symbols.",
+	"version": "2.1.1",
+	"description": "Tiny library that allow you encode/decode numbers to represent as win-1251 string.",
 	"main": "index.js",
 	"scripts": {},
 	"repository": {
@@ -16,16 +16,15 @@
 	"homepage": "https://github.com/vitaliy-du/packnum#readme",
 	"types": "index.d.ts",
 	"keywords": [
-		"radix",
-		"radix-32",
-		"radix-64",
-		"radix-128",
 		"convert number",
-		"number to string",
-		"string to number",
-		"encode number",
+		"decode string to number",
 		"decode string",
 		"encode number to string",
-		"decode string to number"
+		"encode number",
+		"number to string",
+		"radix 128",
+		"radix",
+		"radix-128",
+		"string to number"
 	]
 }

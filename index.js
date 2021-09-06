@@ -1,6 +1,6 @@
 /**
  * PackNum.
- * Tiny library that allow you encode/decode numbers to represent as string symbols.
+ * Tiny library that allow you encode/decode numbers to represent as win-1251 string.
  *
  * Copyright © 2021 Vitaliy Dyukar.
  */
@@ -59,12 +59,14 @@ function parseNumber(value, radix = 10) {
 	if (isNaN(frac) || (frac < 0)) return;
 	var int = (parts[0] && (parts[0] !== '-') && (parts[0] !== '+')) ? Math.abs(parseInt(parts[0], radix)) : 0;
 	var sign = (value[0] === '-') ? -1 : 1;
-	return sign * (int + (frac ? (frac * Math.pow(radix, -Math.min((parts[1] || '').length, 19))) : 0));
+	return sign * (int + (frac ? frac * Math.pow(radix, -Math.min((parts[1] || '').length, 19)) : 0));
 }
 
 function trunc(value, precision = 0) {
-	const factor = value <= 19 ? _pow10[Math.max(precision, 0)] : Math.pow(10, precision);
-	return ((value < 0) ? Math.ceil(value * factor) : Math.floor(value * factor)) / factor;
+	const factor = _pow10[precision];
+	return (value < 0)
+		? precision ? Math.ceil(value * factor) / factor : Math.ceil(value)
+		: precision ? Math.floor(value * factor) / factor : Math.floor(value);
 }
 
 function encode(value, precision, neg) {
@@ -73,61 +75,74 @@ function encode(value, precision, neg) {
 		if (neg) num = 0x7F - num;
 		return _codeToChar[num];
 	}
-	var len = (value >= 0xFE00001)
-		? (value >= 0x3F800000001)
-			? (value >= 0xFE000000000001)
-				? +(value >= 0x7F00000000000001) + 9
-				: +(value >= 0x1FC0000000001) + 7
-			: +(value >= 0x7F0000001) + 5
-		: (value >= 0x3F81)
-			? +(value >= 0x1FC001) + 3
-			: +(value >= 0x80) + 1;
-
-	var bit = (len > 9) && trunc(value / 0x8000000000000000);
-	var meta = 0;
-	if (bit) meta |= 0x20;
-	if (neg) meta |= 0x40;
-	if (precision) meta |= precision;
+	var code = 0;
 	var int = value;
-	var result = new Array(len + 1);
-	result[len] = _codeToChar[meta];
+	var len;
+	var meta = 0;
+	if (neg) meta |= 0x40;
+	if (precision) {
+		meta |= precision | 0x20;
+		len = (value >= 0xFE00001)
+			? (value >= 0x3F800000001)
+				? (value >= 0xFE000000000001)
+					? +(value >= 0x7F00000000000001) + 10
+					: +(value >= 0x1FC0000000001) + 8
+				: +(value >= 0x7F0000001) + 6
+			: (value >= 0x3F81)
+				? +(value >= 0x1FC001) + 4
+				: +(value >= 0x80) + 2;
+	} else {
+		code = int & 0x1F;
+		if (neg) code = 0x1F - code;
+		int = trunc(int / 0x20);
+		len = (value >= 0x3F80001)
+			? (value >= 0xFE00000001)
+				? (value >= 0x3F800000000001)
+					? +(value >= 0x1FC0000000000001) + 9
+					: +(value >= 0x7F0000000001) + 7
+				: +(value >= 0x1FC000001) + 5
+			: (value >= 0xFE1)
+				? +(value >= 0x7F001) + 3
+				: +(value >= 0x20) + 1;
+	}
+	code |= meta;
+	var result = new Array(len);
+	result[--len] = _codeToChar[code];
 	do {
-		len--;
-		var code = int & 0x7F;
+		code = int & 0x7F;
 		if (neg) code = 0x7F - code;
-		result[len] = _codeToChar[code];
+		result[--len] = _codeToChar[code];
 		int = trunc(int / 0x80);
 	} while (len > 0);
 	return result.join('');
 }
 
 export function packNumDecode(value, radix = 10) {
-	if (!(value || '').length) return;
-	var result;
-	if (value.length === 1) {
+	var len = (value || '').length;
+	if (!len || (len > 11)) return;
+	var result = 0;
+	if (len === 1) {
 		result = _charToCode[charCodeFromUtf8ToWin1251(value[0])];
 		if (result >= 64) result -= 0x7F;
 		return (radix === 10) ? result : result.toString(radix);
 	}
-	var len = Math.min(value.length, 10) - 1;
-	var meta = _charToCode[charCodeFromUtf8ToWin1251(value[len])];
-	var bit = (meta & 0x20) > 0;
+	var meta = _charToCode[charCodeFromUtf8ToWin1251(value[--len])];
+	var data = meta & 0x1F;
 	var neg = (meta & 0x40) > 0;
-	var precision = meta & 0x1F;
-	result = bit ? 1 : 0;
+	var precision = (meta & 0x20) && data;
 	for (var i = 0; i < len; i++) {
 		var code = _charToCode[charCodeFromUtf8ToWin1251(value[i])];
 		if (neg) code = 0x7F - code;
 		result = result * 0x80 + code;
 	}
-	if (neg) result = -result;
-	if (precision > 0) result = result / _pow10[precision];
+	result = precision ? (result / _pow10[precision]) : (result * 0x20 + (neg ? 0x1F - data : data));
+	if (neg && (len < 10)) result = -result;
 	return (radix === 10) ? result : result.toString(radix);
 }
 
 export function packNumEncode(value, radix = 10) {
 	var parsed = parseNumber(value, radix);
-	if (isNaN(parsed)) return;
+	if (isNaN(parsed) || (parsed > 0xFFFFFFFFFFFFFFFF)) return;
 	var float = Math.abs(parsed);
 	var precision = 0;
 	while (float !== trunc(float, precision)) precision++;
